@@ -23,6 +23,7 @@ link_directories( ${LINK_DIRECTORIES})
 set(SRCS
 Detector.cxx
 TrackReference.cxx
+DataHeader.cxx
 )
 
 Set(HEADERS)
