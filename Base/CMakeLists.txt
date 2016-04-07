@@ -26,7 +26,10 @@ TrackReference.cxx
 DataHeader.cxx
 )
 
-Set(HEADERS)
+Set(HEADERS
+Detector.h
+TrackReference.h
+)
 Set(LINKDEF BaseLinkDef.h)
 Set(LIBRARY_NAME AliceO2Base)
 Set(DEPENDENCIES Base EG Physics Core)
