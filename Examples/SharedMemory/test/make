@@ -1,0 +1,5 @@
+#!/bin/sh
+g++ -O2 --std=c++14 -pthread -lrt -I $BOOST_ROOT/include -I $ZEROMQ_ROOT/include -I $O2_ROOT/include -L$ZEROMQ_ROOT/lib -lzmq -L$O2_ROOT/lib -lO2Device clear.cxx -o clear
+g++ -O2 --std=c++14 -pthread -lrt -I $BOOST_ROOT/include -I $ZEROMQ_ROOT/include -I $O2_ROOT/include -L$ZEROMQ_ROOT/lib -lzmq -L$O2_ROOT/lib -lO2Device shmSender.cxx -o sender
+g++ -O2 --std=c++14 -pthread -lrt -I $BOOST_ROOT/include -I $ZEROMQ_ROOT/include -I $O2_ROOT/include -L$ZEROMQ_ROOT/lib -lzmq -L$O2_ROOT/lib -lO2Device shmReceiver.cxx -o receiver
+

@@ -144,13 +144,15 @@ o2_define_bucket(
     FairRoot::FairMQ
     pthread
     dl
+    rt
+    O2Device
 
     INCLUDE_DIRECTORIES
     ${FAIRROOT_INCLUDE_DIR}
 )
 
 # a common bucket for the implementation of devices inherited
-# from O2device
+# from O2Device
 if(GLFW_FOUND)
     set(GUI_LIBRARIES DebugGUI)
 endif()

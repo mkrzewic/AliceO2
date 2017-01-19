@@ -16,7 +16,7 @@ void load_all_libs()
    gSystem->Load("libMFTReconstruction");
    gSystem->Load("libMFTSimulation");
    gSystem->Load("libMathUtils");
-   gSystem->Load("libO2device");
+   gSystem->Load("libO2Device");
    gSystem->Load("libQCMerger");
    gSystem->Load("libQCMetricsExtractor");
    gSystem->Load("libQCProducer");

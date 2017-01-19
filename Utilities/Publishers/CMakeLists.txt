@@ -6,7 +6,7 @@ set(MODULE_NAME "Publishers")
 #  - common_boost_bucket
 #  - Base
 #  - Headers
-#  - O2device
+#  - O2Device
 #  - dl
 # the 'dl' dependency is needed as the device boilerplate code in
 # runSimpleMQStateMachine.h uses dlopen etc. Probably this hidden

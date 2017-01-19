@@ -77,9 +77,14 @@ const uint32_t o2::Header::DataHeader::sVersion = 1;
 const o2::Header::HeaderType o2::Header::DataHeader::sHeaderType = String2<uint64_t>("DataHead");
 const o2::Header::SerializationMethod o2::Header::DataHeader::sSerializationMethod = o2::Header::gSerializationMethodNone;
 
-//storage fr NameHeader static
+//storage for NameHeader static
 template <>
 const o2::Header::HeaderType o2::Header::NameHeader<0>::sHeaderType = "NameHead";
+
+//storage for BoostShmHeader static memebrs
+const uint32_t o2::Header::BoostShmHeader::sVersion = 1;
+const o2::Header::HeaderType o2::Header::BoostShmHeader::sHeaderType = String2<uint64_t>("BoostShm");
+const o2::Header::SerializationMethod o2::Header::BoostShmHeader::sSerializationMethod = o2::Header::gSerializationMethodNone;
 
 using namespace o2::Header;
 
