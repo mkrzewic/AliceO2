@@ -1,0 +1,39 @@
+# @author Mikolaj Krzewicki
+
+set(MODULE_NAME "FileSink")
+
+O2_SETUP(NAME ${MODULE_NAME})
+
+# Define the source and header files
+set(SRCS
+  src/FileSink.cxx
+)
+
+set(HEADERS
+  include/${MODULE_NAME}/FileSink.h
+)
+
+set(LIBRARY_NAME ${MODULE_NAME})
+set(BUCKET_NAME O2MessageMonitor_bucket)
+
+O2_GENERATE_LIBRARY()
+
+# Define application
+O2_GENERATE_EXECUTABLE(
+  EXE_NAME runFileSink
+  SOURCES src/runFileSink.cxx
+  MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+  BUCKET_NAME ${BUCKET_NAME}
+)
+
+ADD_DEFINITIONS()
+
+set(TEST_SRCS
+  test/testFileSink.cxx
+)
+
+O2_GENERATE_TESTS(
+  MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+  BUCKET_NAME ${BUCKET_NAME}
+  TEST_SRCS ${TEST_SRCS}
+)
