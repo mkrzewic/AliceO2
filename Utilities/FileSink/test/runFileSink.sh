@@ -1,3 +1,4 @@
-#!/usr/bin/env bash
-#here's how to use it:
-runFileSink --id sink1 --mq-config FileSink.json
+#!/bin/bash -e
+CONFIG=FileSink.json
+[[ -e $CONFIG ]] || CONFIG="$O2_ROOT/share/config/$CONFIG"
+exec runFileSink --id sink1 --mq-config "$CONFIG"
