@@ -20,7 +20,7 @@
 /// granted to it by virtue of its status as an Intergovernmental Organization
 /// or submit itself to any jurisdiction.
 
-/// @file O2MessageMonitor.cxx
+/// @file FileSink.cxx
 ///
 /// @since 2014-12-10
 /// @author M. Krzewicki <mkrzewic@cern.ch>
@@ -35,12 +35,12 @@ using namespace o2::header;
 using namespace o2::Base;
 
 //__________________________________________________________________________________________________
-void O2MessageMonitor::InitTask()
+void FileSink::InitTask()
 {
 }
 
 //__________________________________________________________________________________________________
-void O2MessageMonitor::Run()
+void FileSink::Run()
 {
   while (CheckCurrentState(RUNNING)) {
     O2Message message;
@@ -50,11 +50,12 @@ void O2MessageMonitor::Run()
     // message is always multi-part, so we need to handle that
     // the ForEach() method provides a transparent way to handle the O2 data protocol
     // that makes sure the metadata parts describe the proper data parts.
-    ForEach(message, &O2MessageMonitor::HandleO2frame);
+    ForEach(message, &FileSink::HandleO2frame);
+  }
 }
 
 //__________________________________________________________________________________________________
-bool O2MessageMonitor::HandleO2frame(const byte* headerBuffer, size_t headerBufferSize, const byte* dataBuffer,
+bool FileSink::HandleO2frame(const byte* headerBuffer, size_t headerBufferSize, const byte* dataBuffer,
                                      size_t dataBufferSize)
 {
   AppendToDisk(headerBuffer, headerBufferSize);
@@ -75,7 +76,5 @@ bool O2MessageMonitor::HandleO2frame(const byte* headerBuffer, size_t headerBuff
     float sum = 0.;
     for () { sum+=ourData[i].getX(); }
 */
-  }
-
   return true;
 }
