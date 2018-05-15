@@ -7,10 +7,12 @@ O2_SETUP(NAME ${MODULE_NAME})
 # Define the source and header files
 set(SRCS
   src/FileSink.cxx
+  src/GenerateData.cxx
 )
 
 set(HEADERS
   include/${MODULE_NAME}/FileSink.h
+  include/GenerateData/GenerateData.h
 )
 
 set(LIBRARY_NAME ${MODULE_NAME})
@@ -22,6 +24,13 @@ O2_GENERATE_LIBRARY()
 O2_GENERATE_EXECUTABLE(
   EXE_NAME runFileSink
   SOURCES src/runFileSink.cxx
+  MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+  BUCKET_NAME ${BUCKET_NAME}
+)
+
+O2_GENERATE_EXECUTABLE(
+  EXE_NAME runGenerateData
+  SOURCES src/runGenerateData.cxx
   MODULE_LIBRARY_NAME ${LIBRARY_NAME}
   BUCKET_NAME ${BUCKET_NAME}
 )

@@ -214,7 +214,10 @@ o2_define_bucket(
     MemoryResources
     FairTools
     Headers
-    fairmq_bucket
+    FairRoot::FairMQ
+    pthread
+    dl
+    ReconstructionDataFormats
     ${Monitoring_LIBRARIES}
 
     INCLUDE_DIRECTORIES
