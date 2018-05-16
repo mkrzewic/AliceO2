@@ -39,10 +39,8 @@ class FileSink : public o2::Base::O2Device
  protected:
   void Run() override;
   void InitTask() override;
-  bool HandleO2frame(const byte* headerBuffer, size_t headerBufferSize, const byte* dataBuffer, size_t dataBufferSize);
-  size_t AppendToDisk(const void*, size_t){};
 
-  std::string fileName{"defaultFile.o2"};
+  std::string mFileNameBase{"defaultFile"};
 };
 
 #endif /* FILESINK_H */

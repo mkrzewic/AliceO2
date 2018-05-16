@@ -29,10 +29,13 @@
 #include <options/FairMQProgOptions.h>
 #include "Headers/DataHeader.h"
 #include "FileSink/FileSink.h"
+#include "boost/iostreams/device/mapped_file.hpp"
+#include <gsl/gsl>
 
 using namespace std;
 using namespace o2::header;
 using namespace o2::Base;
+using span = gsl::span<const byte>;
 
 //__________________________________________________________________________________________________
 void FileSink::InitTask()
@@ -42,39 +45,42 @@ void FileSink::InitTask()
 //__________________________________________________________________________________________________
 void FileSink::Run()
 {
+  uint64_t index{0};
   while (CheckCurrentState(RUNNING)) {
     O2Message message;
-    Receive(message, "data");
-    LOG(INFO) << "== New message=============================";
+    int ret = Receive(message, "input");
+    if (ret<=0) {
+      LOG(ERROR) << "error or timeout, jumping out";
+      break;
+    }
 
-    // message is always multi-part, so we need to handle that
-    // the ForEach() method provides a transparent way to handle the O2 data protocol
-    // that makes sure the metadata parts describe the proper data parts.
-    ForEach(message, &FileSink::HandleO2frame);
+    //this is ugly but for now FairMQParts does not internally account for this.
+    size_t messageSize{ 0 };
+    ForEach(message,
+            [&](span header, span payload) { messageSize += header.size() + payload.size(); });
+
+    LOG(DEBUG) << "== New message, nparts: "<<message.fParts.size() << " size: " << messageSize;
+
+    //map a file
+    std::string fileName = mFileNameBase + std::to_string(index) + ".o2";
+    boost::iostreams::mapped_file_params  params;
+    params.path = fileName;
+    params.flags = boost::iostreams::mapped_file_sink::readwrite;
+    params.offset = 0;
+    params.new_file_size = messageSize;
+    params.length = messageSize;
+    boost::iostreams::mapped_file_sink mf;
+    mf.open(params);
+    if (!mf.is_open()) {
+      LOG(ERROR) << "file " << fileName << " could not be opened";
+    }
+
+    // dump all message parts to file
+    byte* here = reinterpret_cast<byte*>(mf.data());
+    ForEach(message, [&](span headerBuffer, span payloadBuffer) {
+      here = std::copy(headerBuffer.begin(), headerBuffer.end(), here);
+      here = std::copy(payloadBuffer.begin(), payloadBuffer.end(), here);
+    });
+    ++index;
   }
-}
-
-//__________________________________________________________________________________________________
-bool FileSink::HandleO2frame(const byte* headerBuffer, size_t headerBufferSize, const byte* dataBuffer,
-                                     size_t dataBufferSize)
-{
-  AppendToDisk(headerBuffer, headerBufferSize);
-  AppendToDisk(dataBuffer, dataBufferSize);
-
-  /*
-  const DataHeader* dataHeader = o2::header::get<DataHeader*>(headerBuffer);
-  if ((*dataHeader) == gDataDescriptioVertexCoordinates) {
-    //code to handle Vertex Coodinates data
-
-    //this definition should live elsewhere
-    struct vtx {
-      float x, y, z;
-    };
-
-    vtx* ourData = reinterpret_cast<vtx*>(dataBuffer);
-
-    float sum = 0.;
-    for () { sum+=ourData[i].getX(); }
-*/
-  return true;
 }
