@@ -5,7 +5,7 @@
                 "id": "sink1",
                 "channels": [
                     {
-                        "name": "data",
+                        "name": "input",
                         "sockets": [
                             {
                                 "type": "pull",
