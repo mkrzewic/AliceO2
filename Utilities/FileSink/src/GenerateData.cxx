@@ -56,8 +56,10 @@ void GenerateData::Run()
 
 	using Vertex=o2::dataformats::Vertex<>;
 	
+  size_t size = nVertex*sizeof(Vertex);
+
 	//allocate memory for data
-	auto vertexMessage = NewMessage(nVertex*sizeof(Vertex));
+	auto vertexMessage = NewMessage(size);
 
 	Vertex* vtxArray = static_cast<Vertex*>(vertexMessage->GetData());
 
@@ -66,7 +68,7 @@ void GenerateData::Run()
 	}
 	
     AddMessage(message,
-	       { DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, 0 }},
+	       { DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size }},
 	       std::move(vertexMessage));
     Send(message, "data");
     ChangeState(PAUSE);
