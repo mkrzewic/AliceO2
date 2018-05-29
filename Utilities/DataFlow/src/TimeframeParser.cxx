@@ -92,7 +92,8 @@ void streamTimeframe(std::istream &stream,
         stream.read(reinterpret_cast<char *>(&state.dh), sizeof(state.dh));
         // If we have a TIMEFRAMEINDEX part and we find the eof, we are done.
         if (stream.eof()) {
-          throw std::runtime_error("Premature end of stream");
+          state.state=PARSE_END_TIMEFRAME;
+          break;
         }
 
         // Otherwise we move to the state which is responsible for parsing the
@@ -142,7 +143,12 @@ void streamTimeframe(std::istream &stream,
           throw std::runtime_error("Unexpected end of file");
         }
         onAddPart(parts, reinterpret_cast<char *>(state.payloadBuffer), state.dh.payloadSize);
-        state.state = PARSE_END_PAIR;
+        if (stream.eof())
+        {
+          state.state=PARSE_END_TIMEFRAME;
+        } else {
+          state.state=PARSE_BEGIN_TIMEFRAME;
+        }
         break;
       case PARSE_END_PAIR:
         LOG(INFO) << "In PARSE_END_PAIR\n";
