@@ -225,10 +225,14 @@ o2_define_bucket(
     ${GUI_LIBRARIES}
     ${Monitoring_LIBRARIES}
     ${Configuration_LIBRARIES}
+    ${ARROW_SHARED_LIB}
+    ${LIBLZMA_LIBRARIES}
 
     SYSTEMINCLUDE_DIRECTORIES
     ${Monitoring_INCLUDE_DIRS}
     ${Configuration_INCLUDE_DIRS}
+    ${ARROW_INCLUDE_DIR}
+    ${LIBLZMA_INCLUDE_DIRS}
 )
 
 o2_define_bucket(
