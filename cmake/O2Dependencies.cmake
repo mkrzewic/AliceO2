@@ -49,7 +49,7 @@ find_package(HEPMC)
 # disable package for the moment
 #find_package(IWYU)
 
-find_package(Boost 1.59 COMPONENTS container thread system timer program_options random filesystem chrono exception regex serialization log log_setup unit_test_framework date_time signals REQUIRED)
+find_package(Boost 1.59 COMPONENTS container iostreams thread system timer program_options random filesystem chrono exception regex serialization log log_setup unit_test_framework date_time signals REQUIRED)
 # for the guideline support library
 include_directories(${MS_GSL_INCLUDE_DIR})
 
@@ -209,6 +209,7 @@ o2_define_bucket(
     Boost::date_time
     Boost::random
     Boost::regex
+    Boost::iostreams
     Base
     Headers
     MemoryResources
