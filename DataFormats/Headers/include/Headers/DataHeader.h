@@ -37,6 +37,7 @@
 #include <algorithm> // std::min
 #include <stdexcept>
 #include "MemoryResources/MemoryResources.h"
+#include <gsl/gsl>
 
 using byte = unsigned char;
 
