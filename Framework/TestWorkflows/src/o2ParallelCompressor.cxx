@@ -200,13 +200,14 @@ WorkflowSpec defineDataProcessing(ConfigContext const &config) {
 
               // We create a buffer where to place our data, and compress there
               size_t outbufSz = arrowBytes * 2;
-              uint8_t *outbuf = new uint8_t[outbufSz];
+              auto alloc = boost::container::pmr::new_delete_resource();
+              uint8_t* outbuf = static_cast<uint8_t*>(alloc->allocate(outbufSz,alignof(std::max_align_t)));
               size_t nWritten = compressFn((const uint8_t *)(&arrowCons[0]), arrowBytes, outbuf);
 
               // Framework adopts our memory chunk and disposes of it
               ctx.outputs().adoptChunk(Output{"TST", "ZIP"},
-                                       reinterpret_cast<char *>(outbuf), nWritten,
-                                       &o2::header::Stack::freefn, nullptr);
+                                       reinterpret_cast<char*>(outbuf), nWritten,
+                                       o2::header::Stack::getFreefn(), alloc);
             };
           }
         }
