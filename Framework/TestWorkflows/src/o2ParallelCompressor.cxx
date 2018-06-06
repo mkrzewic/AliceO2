@@ -11,6 +11,7 @@
 #include "Framework/ConfigParamSpec.h"
 #include "FairLogger.h"
 #include <lzma.h>
+#include <iomanip>
 
 using namespace o2::framework;
 
