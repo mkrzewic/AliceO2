@@ -8,11 +8,13 @@ O2_SETUP(NAME ${MODULE_NAME})
 set(SRCS
   src/FileSink.cxx
   src/GenerateData.cxx
+  src/Analysis.cxx
 )
 
 set(HEADERS
   include/${MODULE_NAME}/FileSink.h
   include/GenerateData/GenerateData.h
+  include/Analysis/Analysis.h
 )
 
 set(LIBRARY_NAME ${MODULE_NAME})
@@ -31,6 +33,13 @@ O2_GENERATE_EXECUTABLE(
 O2_GENERATE_EXECUTABLE(
   EXE_NAME runGenerateData
   SOURCES src/runGenerateData.cxx
+  MODULE_LIBRARY_NAME ${LIBRARY_NAME}
+  BUCKET_NAME ${BUCKET_NAME}
+)
+
+O2_GENERATE_EXECUTABLE(
+  EXE_NAME runAnalysis
+  SOURCES src/runAnalysis.cxx
   MODULE_LIBRARY_NAME ${LIBRARY_NAME}
   BUCKET_NAME ${BUCKET_NAME}
 )

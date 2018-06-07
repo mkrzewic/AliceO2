@@ -30,7 +30,12 @@
 #include "Headers/DataHeader.h"
 #include "Headers/NameHeader.h"
 #include "ReconstructionDataFormats/Vertex.h"
+#include "ReconstructionDataFormats/Track.h"
 #include "GenerateData/GenerateData.h"
+
+#include <TFile.h>
+#include <TList.h>
+#include <TNtupleD.h>
 
 using namespace std;
 using namespace o2::header;
@@ -46,33 +51,150 @@ void GenerateData::InitTask()
 //__________________________________________________________________________________________________
 void GenerateData::Run()
 {
-  while (CheckCurrentState(RUNNING)) {
-    O2Message message;
+  O2Message message;
 
-        LOG(INFO) << "== Add new message=============================";
+  LOG(INFO) << "== Add new message=============================";
 
-	//decide how big the array aill be
-	size_t nVertex{10};
+  TFile *f = TFile::Open("/home/mazimmer/alice/run2_e.root");//, "RECREATE");
+  /*
+  TList *list = (TList*) gFile->Get("test");
 
-	using Vertex=o2::dataformats::Vertex<>;
-	
+  if(list)
+    LOG(INFO) << "have list "<<list->GetName();
+  else
+    LOG(INFO) << "no list";
+  
+  //TNtupleD *ntuple = (TNtupleD*)list->FindObject("ntuple");
+  //TNtupleD *ntuple = (TNtupleD*)list->First();
+  TObject* obj = list->First();
+
+  if(obj)
+    LOG(INFO) << "ntuple var "<<obj->GetTitle();
+  else
+    LOG(INFO) << "no ntuple found";
+  */
+
+  TNtupleD *ntuple = (TNtupleD*)f->Get("ntuple");
+  if(ntuple)
+    LOG(INFO) << "ntuple var "<<ntuple->GetNvar();
+  else
+    LOG(INFO) << "no ntuple found";
+
+   Double_t px, py, pz;
+   Double_t pt, eta, phi, vert;
+   //vert:pt:eta:phi
+
+   ntuple->SetBranchAddress("vert",&vert);
+   ntuple->SetBranchAddress("pt",&pt);
+   ntuple->SetBranchAddress("eta",&eta);
+   ntuple->SetBranchAddress("phi",&phi);
+
+
+   size_t track_entries = (size_t)ntuple->GetEntries();
+   size_t nVertex_track{track_entries};
+
+
+   size_t size_double = nVertex_track*sizeof(Double_t);
+   auto vertexMessage = NewMessage(size_double);//FairMQMessagePtr
+   auto ptMessage = NewMessage(size_double);//FairMQMessagePtr
+   auto etaMessage = NewMessage(size_double);//FairMQMessagePtr
+   auto phiMessage = NewMessage(size_double);//FairMQMessagePtr
+
+   Double_t* vtxArray = static_cast<Double_t*>(vertexMessage->GetData());
+   Double_t* ptArray = static_cast<Double_t*>(ptMessage->GetData());
+   Double_t* etaArray = static_cast<Double_t*>(etaMessage->GetData());
+   Double_t* phiArray = static_cast<Double_t*>(phiMessage->GetData());
+
+   for(Int_t i=0; i<track_entries; i++){
+     //xxx
+     ntuple->GetEntry(i);
+     LOG(INFO) << "ntuple vertex "<<vert<<", pt: "<<pt<<", eta: "<<eta<<", phi: "<<phi;
+     vtxArray[i] = vert;
+     ptArray[i] = pt;
+     etaArray[i] = eta;
+     phiArray[i] = phi;
+   }
+
+   AddMessage(message,
+	      { DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+	      std::move(vertexMessage));
+
+   AddMessage(message,
+	      { DataHeader{ gDataDescriptionTrackPt, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+	      std::move(ptMessage));
+
+      AddMessage(message,
+	      { DataHeader{ gDataDescriptionTrackEta, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+	      std::move(etaMessage));
+
+         AddMessage(message,
+	      { DataHeader{ gDataDescriptionTrackPhi, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+	      std::move(phiMessage));
+
+
+	 //xxx
+
+	 
+
+	 /*
+   
+   size_t nentries = (size_t)ntuple->GetEntries();
+
+  //decide how big the array aill be
+  size_t nVertex{10};
+  
+  using Vertex=o2::dataformats::Vertex<>;
+  
   size_t size = nVertex*sizeof(Vertex);
+  
+  //allocate memory for data
+  auto vertexMessage = NewMessage(size);//FairMQMessagePtr
+  
+  Vertex* vtxArray = static_cast<Vertex*>(vertexMessage->GetData());
 
-	//allocate memory for data
-	auto vertexMessage = NewMessage(size);
+  /*
+  for (int i=0; i<nVertex; ++i) {
+    vtxArray[i] = Vertex(Point3D<float>{(float)i, (float)i, (float)i}, {2., 2., 2., 2., 2., 2.}, 1000, 1);
+  }* /
+  
+  AddMessage(message,
+	     { DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size }},
+	     std::move(vertexMessage));
 
-	Vertex* vtxArray = static_cast<Vertex*>(vertexMessage->GetData());
 
-	for (int i=0; i<nVertex; ++i) {
-	  vtxArray[i] = Vertex(Point3D<float>{1., 1., 1.}, {2., 2., 2., 2., 2., 2.}, 1000, 1);
-	}
-	
-    AddMessage(message,
-	       { DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size }},
-	       std::move(vertexMessage));
-    Send(message, "data");
-    ChangeState(PAUSE);
+  //decide how big the array aill be
+  //size_t nTrack{10};
+  size_t nTrack{nentries};
 
+  //using TrackPar=o2::dataformats::TrackPar;
+  using TrackPar=o2::track::TrackPar;
+  size_t size_track = nTrack*sizeof(TrackPar);
+
+  auto trackMessage = NewMessage(size_track);//FairMQMessagePtr
+
+  TrackPar* track = static_cast<TrackPar*>(trackMessage->GetData());
+  /*
+  for (int i=0; i<nTrack; ++i) {
+    track[i] = TrackPar({i*1.3, 1.4, 1.5}, {2.3, 2.4, 2.5}, 1, true);
+
+    //constructor of TrackPar: TrackPar(const array<float, 3>& xyz, const array<float, 3>& pxpypz, int charge, bool sectorAlpha)
+    }* /
+  
+  for (Int_t i=0;i<nentries;i++) {
+    ntuple->GetEntry(i);
+    LOG(INFO) << "ntuple var x "<<px<<", var y: "<<py<<", var z: "<<pz;
+    track[i] = TrackPar({px, py, pz}, {2.3, 2.4, 2.5}, 1, true);
+    //LOG(INFO) << "track pt "<<track[i].getTheta();
   }
+  
+  
+  AddMessage(message,
+	     { DataHeader{ gDataDescriptionTracks, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_track }},
+	     std::move(trackMessage));
+
+  */
+  
+  Send(message, "data");
+
 }
 

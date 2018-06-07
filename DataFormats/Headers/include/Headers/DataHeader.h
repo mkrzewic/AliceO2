@@ -721,6 +721,9 @@ constexpr o2::header::DataDescription gDataDescriptionConfig{ "CONFIGURATION" };
 constexpr o2::header::DataDescription gDataDescriptionInfo{ "INFORMATION" };
 constexpr o2::header::DataDescription gDataDescriptionROOTStreamers{ "ROOT STREAMERS" };
 constexpr o2::header::DataDescription gDataDescriptionVertex{ "VTX" };
+constexpr o2::header::DataDescription gDataDescriptionTrackPt{ "TRACK_PT" };
+constexpr o2::header::DataDescription gDataDescriptionTrackPhi{ "TRACK_PHI" };
+constexpr o2::header::DataDescription gDataDescriptionTrackEta{ "TRACK_ETA" };
 /// @} // end of doxygen group
 
 //__________________________________________________________________________________________________

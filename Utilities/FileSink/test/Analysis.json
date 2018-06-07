@@ -2,15 +2,15 @@
     "fairMQOptions": {
         "devices": [
             {
-                "id": "sender",
+                "id": "sink1",
                 "channels": [
                     {
                         "name": "data",
                         "sockets": [
                             {
-                                "type": "push",
-                                "method": "connect",
-                                "address": "tcp://localhost:5551",
+                                "type": "pull",
+                                "method": "bind",
+                                "address": "tcp://*:5551",
                                 "sndBufSize": 1000,
                                 "rcvBufSize": 1000,
                                 "rateLogging": 0
