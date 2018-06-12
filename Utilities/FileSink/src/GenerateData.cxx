@@ -51,11 +51,20 @@ void GenerateData::InitTask()
 //__________________________________________________________________________________________________
 void GenerateData::Run()
 {
+  // check socket type of data channel
+  std::string type;
+  std::vector<FairMQChannel>& subChannels = fChannels["data"];
+  if (subChannels.size() > 0) {
+    type = subChannels[0].GetType();
+  }
+
+  auto dataResource = o2::memoryResources::getTransportAllocator(subChannels[0].Transport());
+  
   O2Message message;
 
   LOG(INFO) << "== Add new message=============================";
 
-  TFile *f = TFile::Open("/home/mazimmer/alice/run2_e.root");//, "RECREATE");
+  TFile *f = TFile::Open("run2.root");//, "RECREATE");
   /*
   TList *list = (TList*) gFile->Get("test");
 
@@ -95,16 +104,16 @@ void GenerateData::Run()
 
 
    size_t size_double = nVertex_track*sizeof(Double_t);
-   auto vertexMessage = NewMessage(size_double);//FairMQMessagePtr
-   auto ptMessage = NewMessage(size_double);//FairMQMessagePtr
-   auto etaMessage = NewMessage(size_double);//FairMQMessagePtr
-   auto phiMessage = NewMessage(size_double);//FairMQMessagePtr
+   auto vertexMessage = NewMessageFor("data", 0, size_double);//FairMQMessagePtr
+   auto ptMessage = NewMessageFor("data", 0, size_double);//FairMQMessagePtr
+   auto etaMessage = NewMessageFor("data", 0, size_double);//FairMQMessagePtr
+   auto phiMessage = NewMessageFor("data", 0, size_double);//FairMQMessagePtr
 
    Double_t* vtxArray = static_cast<Double_t*>(vertexMessage->GetData());
    Double_t* ptArray = static_cast<Double_t*>(ptMessage->GetData());
    Double_t* etaArray = static_cast<Double_t*>(etaMessage->GetData());
    Double_t* phiArray = static_cast<Double_t*>(phiMessage->GetData());
-
+   
    for(Int_t i=0; i<track_entries; i++){
      //xxx
      ntuple->GetEntry(i);
@@ -114,23 +123,23 @@ void GenerateData::Run()
      etaArray[i] = eta;
      phiArray[i] = phi;
    }
-
-   AddMessage(message,
-	      { DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+   
+   AddDataBlock(message,
+	      { dataResource, DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(vertexMessage));
-
-   AddMessage(message,
-	      { DataHeader{ gDataDescriptionTrackPt, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+   
+   AddDataBlock(message,
+	      { dataResource, DataHeader{ gDataDescriptionTrackPt, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(ptMessage));
-
-      AddMessage(message,
-	      { DataHeader{ gDataDescriptionTrackEta, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+   
+   AddDataBlock(message,
+	      { dataResource, DataHeader{ gDataDescriptionTrackEta, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(etaMessage));
-
-         AddMessage(message,
-	      { DataHeader{ gDataDescriptionTrackPhi, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
+   
+   AddDataBlock(message,
+	      { dataResource, DataHeader{ gDataDescriptionTrackPhi, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(phiMessage));
-
+   
 
 	 //xxx
 

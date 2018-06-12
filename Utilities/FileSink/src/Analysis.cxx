@@ -122,7 +122,7 @@ bool Analysis::HandleO2frame(const byte* headerBuffer, size_t headerBufferSize, 
       test->Fill(trackArray[i]);
     }
 
-    TFile *f = TFile::Open("/home/mazimmer/alice/test_file.root", "RECREATE");
+    TFile *f = TFile::Open("test_file.root", "RECREATE");
     test->Write();
     f->Close();
     
