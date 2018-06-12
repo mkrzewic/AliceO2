@@ -124,19 +124,19 @@ void GenerateData::Run()
      phiArray[i] = phi;
    }
    
-   AddDataBlock(message,
+   addDataBlock(message,
 	      { dataResource, DataHeader{ gDataDescriptionVertex, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(vertexMessage));
    
-   AddDataBlock(message,
+   addDataBlock(message,
 	      { dataResource, DataHeader{ gDataDescriptionTrackPt, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(ptMessage));
    
-   AddDataBlock(message,
+   addDataBlock(message,
 	      { dataResource, DataHeader{ gDataDescriptionTrackEta, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(etaMessage));
    
-   AddDataBlock(message,
+   addDataBlock(message,
 	      { dataResource, DataHeader{ gDataDescriptionTrackPhi, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, size_double }},
 	      std::move(phiMessage));
    

@@ -56,7 +56,7 @@ void FileSink::Run()
 
     //this is ugly but for now FairMQParts does not internally account for this.
     size_t messageSize{ 0 };
-    ForEach(message,
+    forEach(message,
             [&](span header, span payload) { messageSize += header.size() + payload.size(); });
 
     LOG(DEBUG) << "== New message, nparts: "<<message.fParts.size() << " size: " << messageSize;
@@ -77,7 +77,7 @@ void FileSink::Run()
 
     // dump all message parts to file
     byte* here = reinterpret_cast<byte*>(mf.data());
-    ForEach(message, [&](span headerBuffer, span payloadBuffer) {
+    forEach(message, [&](span headerBuffer, span payloadBuffer) {
       here = std::copy(headerBuffer.begin(), headerBuffer.end(), here);
       here = std::copy(payloadBuffer.begin(), payloadBuffer.end(), here);
     });

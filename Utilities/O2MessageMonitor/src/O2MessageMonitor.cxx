@@ -84,7 +84,7 @@ void O2MessageMonitor::Run()
 
     // maybe a reply message
     if (type == "rep") {
-      AddMessage(message,
+      addDataBlock(message,
                  { dataResource, DataHeader{ gDataDescriptionInfo, gDataOriginAny, DataHeader::SubSpecificationType{ 0 }, 0 } },
                  NewSimpleMessageFor("data", 0, "I am a reply"));
       Send(message, "data");

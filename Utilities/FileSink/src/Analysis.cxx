@@ -72,7 +72,9 @@ void Analysis::Run()
     Receive(message, "data");
     LOG(INFO) << "== New message=============================";
     
-    ForEach(message, &Analysis::HandleO2frame);
+    forEach(message, [&](auto header, auto data){
+        this->Analysis::HandleO2frame(header.data(), header.size(), data.data(), data.size());
+    });
     message.fParts.clear();
 
   }
