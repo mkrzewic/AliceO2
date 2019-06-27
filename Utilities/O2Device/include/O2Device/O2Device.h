@@ -31,7 +31,6 @@
 #include <FairMQDevice.h>
 #include <options/FairMQProgOptions.h>
 #include "O2Device/Utilities.h"
-#include "Monitoring/MonitoringFactory.h"
 #include <stdexcept>
 
 namespace o2
@@ -47,23 +46,6 @@ class O2Device : public FairMQDevice
   using FairMQDevice::FairMQDevice;
 
   ~O2Device() override = default;
-
-  /// Monitoring instance
-  std::unique_ptr<o2::monitoring::Monitoring> monitoring;
-
-  /// Provides monitoring instance
-  auto GetMonitoring() { return monitoring.get(); }
-
-  /// Connects to a monitoring backend
-  void Init() override
-  {
-    FairMQDevice::Init();
-    static constexpr const char* MonitoringUrlKey = "monitoring-url";
-    std::string monitoringUrl = GetConfig()->GetValue<std::string>(MonitoringUrlKey);
-    if (!monitoringUrl.empty()) {
-      monitoring->addBackend(o2::monitoring::MonitoringFactory::GetBackend(monitoringUrl));
-    }
-  }
 
  private:
 };
